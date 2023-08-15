@@ -1,0 +1,14 @@
+archivesBaseName = "common"
+
+// 取消打包为 bootJar 可独立运行包，因为 common 只是一个普通的jar包
+// 如果是需要独立运行的jar包，这个就改为true
+bootJar.enabled = false
+
+dependencies {
+
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    implementation 'com.alibaba:fastjson:2.0.35'
+    implementation 'cn.hutool:hutool-core:5.8.20'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+}

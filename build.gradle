@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+archivesBaseName = "cloud-api"
+
+bootJar.enabled = true
+
+// 版本信息
+ext {
+    set('springCloudVersion', "2022.0.3")
+    lombokVersion = '1.18.26'
+}
+
+// 通用配置
+subprojects {
+    // 使用插件
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    // 项目默认名称与版本
+    group = 'online.shenjian'
+    version = '1.0-SNAPSHOT'
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    // 指定JDK版本
+    sourceCompatibility = '17'
+    jar.enabled = true
+
+    // 指定仓库地址
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        // 导入SpringBoot和SpringCloud依赖Bom
+        imports {
+            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}

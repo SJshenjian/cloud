@@ -1,0 +1,35 @@
+archivesBaseName = "api"
+
+bootJar.enabled = true
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0'
+    implementation 'com.alibaba:fastjson:2.0.35'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
+
+    implementation 'com.mysql:mysql-connector-j'
+    implementation 'com.alibaba:druid-spring-boot-3-starter:1.2.18'
+
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    implementation 'cn.hutool:hutool-core:5.8.20'
+
+    // 本地方法调用依赖
+    implementation 'net.java.dev.jna:jna:5.13.0'
+
+    // 引入本地的 common 模块
+    implementation project(':common')
+    implementation project(':client')
+
+    testImplementation 'junit:junit:4.13.1'
+}
