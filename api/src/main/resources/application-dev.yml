@@ -1,0 +1,13 @@
+springdoc:
+  swagger-ui:
+    # swagger-ui地址
+    path: /springdoc/swagger-ui.html
+    enabled: true
+    # 配置本地访问页面
+    #config-url: /springdoc/api-docs/swagger-config
+    # 取消默认Swagger访问页面
+    disable-swagger-default-url: true
+    # 修复Failed to load remote configuration.
+    url: /springdoc/api-docs
+  api-docs:
+    path: /springdoc/api-docs
