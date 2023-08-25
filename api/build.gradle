@@ -11,6 +11,8 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.3.1'
+    implementation 'com.baomidou:mybatis-plus-boot-starter-test:3.5.3.1'
     implementation 'com.alibaba:fastjson:2.0.35'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
 
@@ -32,4 +34,8 @@ dependencies {
     implementation project(':client')
 
     testImplementation 'junit:junit:4.13.1'
+
+    // 只是在代码生成测试阶段用
+    testImplementation 'com.baomidou:mybatis-plus-generator:3.5.3.1'
+    implementation 'org.apache.velocity:velocity-engine-core:2.3'
 }

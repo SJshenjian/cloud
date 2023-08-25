@@ -11,3 +11,13 @@ springdoc:
     url: /springdoc/api-docs
   api-docs:
     path: /springdoc/api-docs
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://127.0.0.1:3306/cloud?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+      username: cloud
+      password: 123456
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
