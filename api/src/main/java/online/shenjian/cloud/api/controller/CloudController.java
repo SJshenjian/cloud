@@ -1,7 +1,7 @@
 package online.shenjian.cloud.api.controller;
 
 import online.shenjian.cloud.client.cloud.CloudClient;
-import online.shenjian.cloud.client.cloud.dto.UserInfoDto;
+import online.shenjian.cloud.client.cloud.dto.UserDto;
 import online.shenjian.cloud.client.common.ResponseVo;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CloudController implements CloudClient {
 
     @Override
-    public ResponseVo login(UserInfoDto userInfoDto) {
+    public ResponseVo login(UserDto userDto) {
         return ResponseVo.success("登录成功");
     }
 }

@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Schema(description = "用户信息DTO")
 @Data
-public class UserInfoDto {
+public class UserDto {
 
     @Schema(description = "用户ID")
     private String userId;
