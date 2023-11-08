@@ -9,7 +9,6 @@ import online.shenjian.cloud.api.service.UserService;
 import online.shenjian.cloud.api.utils.TokenUtils;
 import online.shenjian.cloud.client.cloud.dto.UserDto;
 import online.shenjian.cloud.client.common.ResponseVo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**

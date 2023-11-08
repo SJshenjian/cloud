@@ -22,4 +22,9 @@ public class CloudController implements CloudClient {
     public ResponseVo login(UserDto userDto) {
         return userService.login(userDto);
     }
+
+    @Override
+    public ResponseVo testToken(UserDto userDto) {
+        return ResponseVo.success("TOKEN测试成功");
+    }
 }
