@@ -7,6 +7,7 @@ import online.shenjian.cloud.api.mapper.UserMapper;
 import online.shenjian.cloud.api.model.User;
 import online.shenjian.cloud.api.service.UserService;
 import online.shenjian.cloud.api.utils.TokenUtils;
+import online.shenjian.cloud.api.utils.Utils;
 import online.shenjian.cloud.client.cloud.dto.UserDto;
 import online.shenjian.cloud.client.common.ResponseVo;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,10 @@ public class UserServiceImpl implements UserService {
         wrapper.last("LIMIT 1");
         User user = userMapper.selectOne(wrapper);
 
-        // 假设用户一定存在且密码正确
+        // 判断是否存在该用户
+        if (user == null) {
+            return ResponseVo.error(Utils.getI18n("user.login.error", null));
+        }
 
         Claims claims = new Claims();
         claims.setUserId(user.getId());
