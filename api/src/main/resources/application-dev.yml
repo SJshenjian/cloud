@@ -15,7 +15,7 @@ spring:
   datasource:
     druid:
       url: jdbc:mysql://127.0.0.1:3306/cloud?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
-      username: cloud
+      username: root
       password: 123456
 
 mybatis-plus:
