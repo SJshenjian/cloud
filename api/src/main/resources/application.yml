@@ -81,3 +81,10 @@ mybatis-plus:
       id-type: auto
   # mapper xml文件路径
   mapper-locations: classpath:mapper/*.xml
+
+aliyunOss:
+  file:
+    endpoint: oss-cn-shanghai.aliyuncs.com
+    accessKeyId: LTAI8aSSSIJ
+    accessKeySecret: 9O4RxCcSSSSSXYma4
+    bucketName: sfxs

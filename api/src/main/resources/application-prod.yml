@@ -1,0 +1,12 @@
+springdoc:
+  swagger-ui:
+    enabled: false
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://XXXX:3306/dms?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+      username: XXX
+      password: XXX
+aliyunOss:
+  file:
+    subDir: sfxs
