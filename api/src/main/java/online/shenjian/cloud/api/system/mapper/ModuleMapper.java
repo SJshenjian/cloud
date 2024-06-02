@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @since 2023/8/2
  */
 @Repository
-public interface ModuleInfoMapper extends BaseMapper<Module> {
+public interface ModuleMapper extends BaseMapper<Module> {
 
 }

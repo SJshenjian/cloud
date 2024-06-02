@@ -5,8 +5,8 @@ import online.shenjian.cloud.client.common.ResponseVo;
 import online.shenjian.cloud.client.cloud.SystemClient;
 import online.shenjian.cloud.client.cloud.dto.system.config.SysConfigDto;
 import online.shenjian.cloud.client.cloud.dto.system.config.SysConfigQueryDto;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoDto;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoQueryDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleQueryDto;
 import online.shenjian.cloud.client.cloud.dto.system.module.ModuleTreeDto;
 import online.shenjian.cloud.client.cloud.dto.system.org.OrgInfoDto;
 import online.shenjian.cloud.client.cloud.dto.system.org.OrgInfoQueryDto;
@@ -79,8 +79,8 @@ public class SystemController implements SystemClient {
     }
 
     @Override
-    public Boolean saveModule(ModuleInfoDto moduleInfoDto) {
-        return moduleService.saveModule(moduleInfoDto);
+    public Boolean saveModule(ModuleDto moduleDto) {
+        return moduleService.saveModule(moduleDto);
     }
 
     @Override
@@ -89,13 +89,13 @@ public class SystemController implements SystemClient {
     }
 
     @Override
-    public IPage<ModuleInfoDto> listModule(ModuleInfoQueryDto moduleInfoQueryDto) {
-        return moduleService.listModule(moduleInfoQueryDto);
+    public IPage<ModuleDto> listModule(ModuleQueryDto moduleQueryDto) {
+        return moduleService.listModule(moduleQueryDto);
     }
 
     @Override
-    public Boolean updateModule(ModuleInfoDto moduleInfoDto) {
-        return moduleService.updateModule(moduleInfoDto);
+    public Boolean updateModule(ModuleDto moduleDto) {
+        return moduleService.updateModule(moduleDto);
     }
 
     @Override

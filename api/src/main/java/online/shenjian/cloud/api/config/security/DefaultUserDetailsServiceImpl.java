@@ -35,12 +35,12 @@ public class DefaultUserDetailsServiceImpl implements UserDetailsService {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("account", username);
         queryWrapper.eq("del_flag", Constant.YesOrNo.NO.val());
-        User userInfo = userMapper.selectOne(queryWrapper);
-        if (userInfo == null) {
+        User user = userMapper.selectOne(queryWrapper);
+        if (user == null) {
             log.info("登录用户：{} 不存在", username);
             throw new UsernameNotFoundException("登录用户：" + username + " 不存在");
         }
-        LoginUserDto loginUserDto = CommonDtoUtils.transform(userInfo, LoginUserDto.class);
+        LoginUserDto loginUserDto = CommonDtoUtils.transform(user, LoginUserDto.class);
         return loginUserDto;
     }
 }

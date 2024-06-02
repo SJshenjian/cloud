@@ -89,9 +89,9 @@ public class TokenUtils {
      *
      * @return
      */
-    public static String getUserIdFromToken(String token) {
+    public static String getUsernameFromToken(String token) {
         Claims claims = parseToken(token);
-        return claims.getUserId();
+        return claims.getAccount();
     }
 
     public static Claims getClaimsFromToken() {

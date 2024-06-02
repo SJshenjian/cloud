@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * @since 2023/8/1
  */
 @Repository
-public interface OrgInfoMapper extends BaseMapper<Org> {
+public interface OrgMapper extends BaseMapper<Org> {
 
     /**
      * 根据上级编码查找最大编码
@@ -20,6 +20,6 @@ public interface OrgInfoMapper extends BaseMapper<Org> {
      * @param orgCode 上级编码
      * @return
      */
-    @Select("SELECT MAX(oi.org_code) FROM tb_sys_org_info oi WHERE 1=1 AND oi.parent_code=#{orgCode} ")
+    @Select("SELECT MAX(oi.org_code) FROM sys_org oi WHERE 1=1 AND oi.parent_code=#{orgCode} ")
     String getMaxCode(String orgCode);
 }

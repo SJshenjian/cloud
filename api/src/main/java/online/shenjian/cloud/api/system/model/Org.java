@@ -44,10 +44,6 @@ public class Org {
     @TableField(value = "parent_name")
     private String parentName;
 
-    @Schema(description = "手机号码")
-    @TableField(value = "phone_number")
-    private String phoneNumber;
-
     @Schema(description = "排序码")
     @TableField(value = "sort_code")
     private Integer sortCode;

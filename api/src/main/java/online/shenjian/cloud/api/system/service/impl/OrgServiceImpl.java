@@ -9,7 +9,7 @@ import online.shenjian.cloud.client.cloud.dto.system.org.OrgInfoQueryDto;
 import online.shenjian.cloud.client.cloud.dto.system.org.OrgTreeDto;
 import online.shenjian.cloud.common.enums.Constant;
 import online.shenjian.cloud.api.config.security.model.Claims;
-import online.shenjian.cloud.api.system.mapper.OrgInfoMapper;
+import online.shenjian.cloud.api.system.mapper.OrgMapper;
 import online.shenjian.cloud.api.system.model.Org;
 import online.shenjian.cloud.api.system.service.OrgService;
 import online.shenjian.cloud.api.utils.TokenUtils;
@@ -28,10 +28,10 @@ import java.util.List;
 @Service
 public class OrgServiceImpl implements OrgService {
 
-    private OrgInfoMapper orgInfoMapper;
+    private OrgMapper orgMapper;
 
-    public OrgServiceImpl(OrgInfoMapper orgInfoMapper) {
-        this.orgInfoMapper = orgInfoMapper;
+    public OrgServiceImpl(OrgMapper orgMapper) {
+        this.orgMapper = orgMapper;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class OrgServiceImpl implements OrgService {
         // 查询该组织机构下所有信息
         final String orgCode = claims.getOrgCode();
         queryWrapper.likeRight("org_code", orgCode);
-        List<Org> orgList = orgInfoMapper.selectList(queryWrapper);
+        List<Org> orgList = orgMapper.selectList(queryWrapper);
 
         List<OrgTreeDto> orgTreeDtoList = TreeUtils.listOrgTree(orgList, orgCode);
 
@@ -59,7 +59,7 @@ public class OrgServiceImpl implements OrgService {
         if (StringUtils.isNotBlank(orgInfoQueryDto.getOrgName())) {
             queryWrapper.like("org_name", orgInfoQueryDto.getOrgName());
         }
-        IPage<Org> iPage = orgInfoMapper.selectPage(page, queryWrapper);
+        IPage<Org> iPage = orgMapper.selectPage(page, queryWrapper);
         List<OrgInfoDto> orgDtoList = CommonDtoUtils.transformList(iPage.getRecords(), OrgInfoDto.class);
         IPage<OrgInfoDto> resultPage = new Page<>(iPage.getCurrent(), iPage.getSize(), iPage.getTotal());
         resultPage.setRecords(orgDtoList);
@@ -69,7 +69,7 @@ public class OrgServiceImpl implements OrgService {
     @Override
     public Boolean saveOrg(OrgInfoDto orgInfoDto) {
         String nextCode;
-        String maxCode = orgInfoMapper.getMaxCode(orgInfoDto.getParentCode());
+        String maxCode = orgMapper.getMaxCode(orgInfoDto.getParentCode());
         if (StringUtils.isBlank(maxCode)) {
             nextCode = orgInfoDto.getParentCode() + ".001";
         } else {
@@ -97,7 +97,7 @@ public class OrgServiceImpl implements OrgService {
         org.setCreateTime(new Date());
         Claims claims = TokenUtils.getClaimsFromToken();
         org.setCreateUser(claims.getAccount());
-        orgInfoMapper.insert(org);
+        orgMapper.insert(org);
         return true;
     }
 
@@ -111,7 +111,7 @@ public class OrgServiceImpl implements OrgService {
         org.setDelFlag(Constant.YesOrNo.YES.val());
         org.setUpdateTime(new Date());
         org.setUpdateUser(TokenUtils.getClaimsFromToken().getAccount());
-        orgInfoMapper.updateById(org);
+        orgMapper.updateById(org);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class OrgServiceImpl implements OrgService {
         Org org = CommonDtoUtils.transform(orgInfoDto, Org.class);
         org.setUpdateUser(TokenUtils.getClaimsFromToken().getAccount());
         org.setUpdateTime(new Date());
-        orgInfoMapper.updateById(org);
+        orgMapper.updateById(org);
         return true;
     }
 }

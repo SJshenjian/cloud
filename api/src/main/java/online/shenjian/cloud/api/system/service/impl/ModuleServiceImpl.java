@@ -4,10 +4,10 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoDto;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoQueryDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleQueryDto;
 import online.shenjian.cloud.client.cloud.dto.system.module.ModuleTreeDto;
-import online.shenjian.cloud.api.system.mapper.ModuleInfoMapper;
+import online.shenjian.cloud.api.system.mapper.ModuleMapper;
 import online.shenjian.cloud.api.system.mapper.RoleModuleMapper;
 import online.shenjian.cloud.api.system.model.Module;
 import online.shenjian.cloud.api.system.model.RoleModule;
@@ -26,45 +26,45 @@ import java.util.List;
 @Service
 public class ModuleServiceImpl implements ModuleService {
 
-    private ModuleInfoMapper moduleInfoMapper;
+    private ModuleMapper moduleMapper;
     private RoleModuleMapper roleModuleMapper;
 
-    public ModuleServiceImpl(ModuleInfoMapper moduleInfoMapper, RoleModuleMapper roleModuleMapper) {
-        this.moduleInfoMapper = moduleInfoMapper;
+    public ModuleServiceImpl(ModuleMapper moduleMapper, RoleModuleMapper roleModuleMapper) {
+        this.moduleMapper = moduleMapper;
         this.roleModuleMapper = roleModuleMapper;
     }
 
     @Override
     public List<ModuleTreeDto> initModuleInfoTree() {
         QueryWrapper<Module> queryWrapper = new QueryWrapper<>();
-        List<Module> moduleList = moduleInfoMapper.selectList(queryWrapper);
+        List<Module> moduleList = moduleMapper.selectList(queryWrapper);
 
         List<ModuleTreeDto> moduleTreeDtoList = TreeUtils.listModuleTree(moduleList, "-1");
         return moduleTreeDtoList;
     }
 
     @Override
-    public IPage<ModuleInfoDto> listModule(ModuleInfoQueryDto moduleInfoQueryDto) {
-        IPage<Module> page = new Page<>(moduleInfoQueryDto.getPageNumber(), moduleInfoQueryDto.getPageSize());
+    public IPage<ModuleDto> listModule(ModuleQueryDto moduleQueryDto) {
+        IPage<Module> page = new Page<>(moduleQueryDto.getPageNumber(), moduleQueryDto.getPageSize());
         QueryWrapper<Module> queryWrapper = new QueryWrapper<>();
         // 查询该组织机构下所有信息
-        queryWrapper.likeRight("parent_id", moduleInfoQueryDto.getParentId());
-        if (StringUtils.isNotBlank(moduleInfoQueryDto.getModuleName())) {
-            queryWrapper.like("module_name", moduleInfoQueryDto.getModuleName());
+        queryWrapper.likeRight("parent_id", moduleQueryDto.getParentId());
+        if (StringUtils.isNotBlank(moduleQueryDto.getModuleName())) {
+            queryWrapper.like("module_name", moduleQueryDto.getModuleName());
         }
         queryWrapper.orderByAsc("sort_code");
-        IPage<Module> iPage = moduleInfoMapper.selectPage(page, queryWrapper);
-        List<ModuleInfoDto> patientDtoList = CommonDtoUtils.transformList(iPage.getRecords(), ModuleInfoDto.class);
-        IPage<ModuleInfoDto> resultPage = new Page<>(iPage.getCurrent(), iPage.getSize(), iPage.getTotal());
+        IPage<Module> iPage = moduleMapper.selectPage(page, queryWrapper);
+        List<ModuleDto> patientDtoList = CommonDtoUtils.transformList(iPage.getRecords(), ModuleDto.class);
+        IPage<ModuleDto> resultPage = new Page<>(iPage.getCurrent(), iPage.getSize(), iPage.getTotal());
         resultPage.setRecords(patientDtoList);
         return resultPage;
     }
 
     @Override
-    public Boolean saveModule(ModuleInfoDto moduleInfoDto) {
-        Module module = CommonDtoUtils.transform(moduleInfoDto, Module.class);
+    public Boolean saveModule(ModuleDto moduleDto) {
+        Module module = CommonDtoUtils.transform(moduleDto, Module.class);
         module.setModuleId(IdUtil.getSnowflakeNextIdStr());
-        moduleInfoMapper.insert(module);
+        moduleMapper.insert(module);
         return true;
     }
 
@@ -75,7 +75,7 @@ public class ModuleServiceImpl implements ModuleService {
         }
         Module module = new Module();
         module.setModuleId(moduleId);
-        moduleInfoMapper.deleteById(module);
+        moduleMapper.deleteById(module);
 
         QueryWrapper<RoleModule> roleModuleQueryWrapper = new QueryWrapper<>();
         roleModuleQueryWrapper.eq("module_id", moduleId);
@@ -83,12 +83,12 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public Boolean updateModule(ModuleInfoDto moduleInfoDto) {
-        if (StringUtils.isBlank(moduleInfoDto.getModuleId())) {
+    public Boolean updateModule(ModuleDto moduleDto) {
+        if (StringUtils.isBlank(moduleDto.getModuleId())) {
             return false;
         }
-        Module module = CommonDtoUtils.transform(moduleInfoDto, Module.class);
-        moduleInfoMapper.updateById(module);
+        Module module = CommonDtoUtils.transform(moduleDto, Module.class);
+        moduleMapper.updateById(module);
         return true;
     }
 }

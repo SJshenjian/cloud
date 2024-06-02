@@ -10,7 +10,7 @@ import online.shenjian.cloud.client.cloud.dto.system.config.SysConfigDto;
 import online.shenjian.cloud.client.cloud.dto.system.config.SysConfigQueryDto;
 import online.shenjian.cloud.api.config.security.model.Claims;
 import online.shenjian.cloud.api.system.mapper.SysConfigPlusMapper;
-import online.shenjian.cloud.api.system.model.SysConfig;
+import online.shenjian.cloud.api.system.model.Config;
 import online.shenjian.cloud.api.system.service.SysConfigService;
 import online.shenjian.cloud.api.utils.TokenUtils;
 import io.micrometer.common.util.StringUtils;
@@ -26,7 +26,7 @@ import java.util.Date;
  * @since 2023-08-22
  */
 @Service
-public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, Config> implements SysConfigService {
 
     private SysConfigMapper sysConfigMapper;
     private SysConfigPlusMapper sysConfigPlusMapper;
@@ -38,15 +38,15 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
 
     @Override
     public Boolean saveConfig(SysConfigDto sysConfigDto) {
-        SysConfig sysConfig = CommonDtoUtils.transform(sysConfigDto, SysConfig.class);
+        Config config = CommonDtoUtils.transform(sysConfigDto, Config.class);
         if (StringUtils.isBlank(sysConfigDto.getCode())) {
             return false;
         }
-        sysConfig.setId(IdUtil.getSnowflakeNextIdStr());
-        sysConfig.setUpdateTime(new Date());
+        config.setId(IdUtil.getSnowflakeNextIdStr());
+        config.setUpdateTime(new Date());
         Claims claims = TokenUtils.getClaimsFromToken();
-        sysConfig.setUpdateUser(claims.getAccount());
-        sysConfigMapper.insert(sysConfig);
+        config.setUpdateUser(claims.getAccount());
+        sysConfigMapper.insert(config);
         return true;
     }
 
@@ -61,7 +61,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Override
     public IPage<SysConfigDto> listConfig(SysConfigQueryDto queryDto) {
         IPage<SysConfigDto> page = new Page<>(queryDto.getPageNumber(), queryDto.getPageSize());
-        QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Config> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(queryDto.getCode())) {
             queryWrapper.like("code", queryDto.getCode());
         }
@@ -77,16 +77,16 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         if (StringUtils.isBlank(sysConfigDto.getId())) {
             return false;
         }
-        SysConfig sysConfig = CommonDtoUtils.transform(sysConfigDto, SysConfig.class);
-        sysConfig.setUpdateUser(TokenUtils.getClaimsFromToken().getAccount());
-        sysConfig.setUpdateTime(new Date());
-        sysConfigMapper.updateById(sysConfig);
+        Config config = CommonDtoUtils.transform(sysConfigDto, Config.class);
+        config.setUpdateUser(TokenUtils.getClaimsFromToken().getAccount());
+        config.setUpdateTime(new Date());
+        sysConfigMapper.updateById(config);
         return true;
     }
 
     @Override
     public SysConfigDto getConfig(SysConfigDto sysConfigDto) {
-        QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Config> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(sysConfigDto.getCode())) {
             queryWrapper.eq("code", sysConfigDto.getCode());
         }
@@ -94,8 +94,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
             queryWrapper.eq("org_code", sysConfigDto.getOrgCode());
         }
         queryWrapper.last("LIMIT 1");
-        SysConfig sysConfig = sysConfigMapper.selectOne(queryWrapper);
-        SysConfigDto result = CommonDtoUtils.transform(sysConfig, SysConfigDto.class);
+        Config config = sysConfigMapper.selectOne(queryWrapper);
+        SysConfigDto result = CommonDtoUtils.transform(config, SysConfigDto.class);
         return result;
     }
 }

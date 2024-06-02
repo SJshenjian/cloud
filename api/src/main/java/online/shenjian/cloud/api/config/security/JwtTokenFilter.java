@@ -48,9 +48,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = RequestUtils.getRequest().getHeader("Authorization");
         // 过滤登录页面，防止token失效
         if (StringUtils.isNotBlank(token) && !"null".equals(token) && !ignoreUrlSet.contains(request.getRequestURI())) {
-            String userId = TokenUtils.getUserIdFromToken(token);
-            if (StringUtils.isNotBlank(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            String username = TokenUtils.getUsernameFromToken(token);
+            if (StringUtils.isNotBlank(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 if (TokenUtils.validateToken(token)) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

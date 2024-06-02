@@ -134,7 +134,7 @@ COMMIT;
 DROP TABLE IF EXISTS `usr_user`;
 CREATE TABLE `usr_user` (
   `user_id` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户ID',
-  `user_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '用户名',
+  `username` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '用户名',
   `account` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '用户账号',
   `password` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '密码',
   `org_code` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '机构编码',
@@ -157,7 +157,7 @@ CREATE TABLE `usr_user` (
 -- Records of usr_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `usr_user` (`user_id`, `user_name`, `account`, `password`, `org_code`, `role_id`, `department`, `title`, `employee_number`, `state`, `phone_number`, `gender`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('01bfd913206640808321af42ff0d316d', '超级管理员', 'admin', '', '001', 'super-admin', NULL, NULL, NULL, '0', '1234567990', '', '0', '2023-07-24 16:18:36', 'admin', '2023-08-04 10:38:28', 'admin');
+INSERT INTO `usr_user` (`user_id`, `username`, `account`, `password`, `org_code`, `role_id`, `department`, `title`, `employee_number`, `state`, `phone_number`, `gender`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('01bfd913206640808321af42ff0d316d', '超级管理员', 'admin', '', '001', 'super-admin', NULL, NULL, NULL, '0', '1234567990', '', '0', '2023-07-24 16:18:36', 'admin', '2023-08-04 10:38:28', 'admin');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

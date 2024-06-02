@@ -12,7 +12,7 @@ import lombok.Data;
  * @since 2023/8/02
  */
 @Schema(description = "菜单资源表")
-@TableName(value = "module")
+@TableName(value = "sys_module")
 @Data
 public class Module {
 

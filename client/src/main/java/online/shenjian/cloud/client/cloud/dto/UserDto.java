@@ -1,5 +1,6 @@
 package online.shenjian.cloud.client.cloud.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -34,4 +35,7 @@ public class UserDto {
 
     @Schema(description = "用户角色")
     private String roleName;
+
+    @Schema(description = "状态 0启用 1禁用")
+    private String state;
 }

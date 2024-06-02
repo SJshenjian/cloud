@@ -1,7 +1,7 @@
 package online.shenjian.cloud.api.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import online.shenjian.cloud.api.system.model.SysConfig;
+import online.shenjian.cloud.api.system.model.Config;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @since 2023-08-22
  */
 @Repository
-public interface SysConfigMapper extends BaseMapper<SysConfig> {
+public interface SysConfigMapper extends BaseMapper<Config> {
 
 }

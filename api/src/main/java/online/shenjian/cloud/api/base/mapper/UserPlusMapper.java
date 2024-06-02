@@ -22,11 +22,16 @@ public interface UserPlusMapper extends BaseMapper<UserDto> {
      * 直接写SQL即可，即使关联查询的结果也会映射到DTO中
      */
     String querySql = "SELECT " +
-            "               u.username, u.name " +
+            "               u.user_id, u.username, u.account, u.role_id, u.department, u.title, u.employee_number, u.state, u.phone_number, u.del_flag, u.org_code, u.create_time, o.org_name, r.role_name " +
             "          FROM " +
-            "               user AS u";
+            "               usr_user AS u " +
+            "               LEFT JOIN sys_org AS o ON u.org_code = o.org_code" +
+            "               LEFT JOIN sys_role AS r ON u.role_id = r.role_id ";
     String wrapperSql = "SELECT * FROM ( " + querySql + " ) AS q ${ew.customSqlSegment}";
 
+    /**
+     * 分页查询
+     */
     @Select(wrapperSql)
     Page<UserDto> page(IPage page, @Param("ew") Wrapper queryWrapper);
 }

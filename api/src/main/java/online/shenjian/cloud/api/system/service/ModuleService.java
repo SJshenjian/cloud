@@ -1,8 +1,8 @@
 package online.shenjian.cloud.api.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoDto;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoQueryDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleQueryDto;
 import online.shenjian.cloud.client.cloud.dto.system.module.ModuleTreeDto;
 
 import java.util.List;
@@ -17,11 +17,11 @@ public interface ModuleService {
 
     List<ModuleTreeDto> initModuleInfoTree();
 
-    IPage<ModuleInfoDto> listModule(ModuleInfoQueryDto moduleInfoQueryDto);
+    IPage<ModuleDto> listModule(ModuleQueryDto moduleQueryDto);
 
-    Boolean saveModule(ModuleInfoDto moduleInfoDto);
+    Boolean saveModule(ModuleDto moduleDto);
 
     void deleteModule(String moduleId);
 
-    Boolean updateModule(ModuleInfoDto moduleInfoDto);
+    Boolean updateModule(ModuleDto moduleDto);
 }

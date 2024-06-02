@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Schema(description = "菜单查询DTO")
 @Data
-public class ModuleInfoQueryDto {
+public class ModuleQueryDto {
 
     @Schema(description = "父菜单ID")
     private String parentId;

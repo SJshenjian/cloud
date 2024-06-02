@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import online.shenjian.cloud.client.cloud.dto.system.config.SysConfigDto;
 import online.shenjian.cloud.client.cloud.dto.system.config.SysConfigQueryDto;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoDto;
-import online.shenjian.cloud.client.cloud.dto.system.module.ModuleInfoQueryDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleDto;
+import online.shenjian.cloud.client.cloud.dto.system.module.ModuleQueryDto;
 import online.shenjian.cloud.client.cloud.dto.system.module.ModuleTreeDto;
 import online.shenjian.cloud.client.cloud.dto.system.org.OrgInfoDto;
 import online.shenjian.cloud.client.cloud.dto.system.org.OrgInfoQueryDto;
@@ -61,7 +61,7 @@ public interface SystemClient {
 
     @PostMapping(value = "/module/save", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "新增菜单", tags = "系统管理")
-    Boolean saveModule(@RequestBody ModuleInfoDto moduleInfoDto);
+    Boolean saveModule(@RequestBody ModuleDto moduleDto);
 
     @GetMapping(value ="/module/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "删除菜单", tags = "系统管理")
@@ -72,11 +72,11 @@ public interface SystemClient {
 
     @PostMapping(value = "/module/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "菜单列表", tags = "系统管理")
-    IPage<ModuleInfoDto> listModule(@RequestBody ModuleInfoQueryDto moduleInfoQueryDto);
+    IPage<ModuleDto> listModule(@RequestBody ModuleQueryDto moduleQueryDto);
 
     @PostMapping(value = "/module/update", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "菜单修改", tags = "系统管理")
-    Boolean updateModule(@RequestBody ModuleInfoDto moduleInfoDto);
+    Boolean updateModule(@RequestBody ModuleDto moduleDto);
 
     @PostMapping(value = "/role/save", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "新增角色", tags = "系统管理")

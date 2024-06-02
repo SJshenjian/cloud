@@ -21,7 +21,7 @@ import java.util.Date;
 @Data
 @TableName("sys_config")
 @Schema(description = "系统配置表")
-public class SysConfig implements Serializable {
+public class Config implements Serializable {
 
     @Schema(description = "配置ID")
     @TableId(value = "id", type = IdType.INPUT)

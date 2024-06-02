@@ -26,7 +26,7 @@ public class User implements Serializable {
     private String userId;
 
     @Schema(description = "用户名")
-    @TableField(value = "user_name")
+    @TableField(value = "username")
     private String username;
 
     @Schema(description = "登录账号")
