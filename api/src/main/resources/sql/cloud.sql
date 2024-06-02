@@ -11,7 +11,7 @@
  Target Server Version : 80036 (8.0.36-0ubuntu0.22.04.1)
  File Encoding         : 65001
 
- Date: 01/06/2024 13:39:36
+ Date: 02/06/2024 18:30:47
 */
 
 SET NAMES utf8mb4;
@@ -63,6 +63,10 @@ CREATE TABLE `sys_module` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_module` (`module_id`, `module_name`, `module_url`, `module_code`, `sort_code`, `parent_id`, `parent_name`) VALUES ('001', '算法小生', NULL, NULL, 1, '-1', NULL);
+INSERT INTO `sys_module` (`module_id`, `module_name`, `module_url`, `module_code`, `sort_code`, `parent_id`, `parent_name`) VALUES ('1797210739841884160', '机构管理', '/org', 'org', 1, '001', '算法小生');
+INSERT INTO `sys_module` (`module_id`, `module_name`, `module_url`, `module_code`, `sort_code`, `parent_id`, `parent_name`) VALUES ('1797210846234599424', '菜单管理', '/module', 'module', 2, '001', '算法小生');
+INSERT INTO `sys_module` (`module_id`, `module_name`, `module_url`, `module_code`, `sort_code`, `parent_id`, `parent_name`) VALUES ('1797210920687689728', '用户管理', '/user', 'user', 3, '001', '算法小生');
+INSERT INTO `sys_module` (`module_id`, `module_name`, `module_url`, `module_code`, `sort_code`, `parent_id`, `parent_name`) VALUES ('1797211013025292288', '菜单管理', '/role', 'role', 4, '001', '算法小生');
 COMMIT;
 
 -- ----------------------------
@@ -90,6 +94,7 @@ CREATE TABLE `sys_org` (
 -- Records of sys_org
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_org` (`org_id`, `org_code`, `org_name`, `parent_id`, `parent_code`, `parent_name`, `sort_code`, `remark`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('1797211572465754112', '001.001', '欢迎关注我', NULL, '001', '算法小生', 1, '', '0', '2024-06-02 18:20:04', 'admin', NULL, NULL);
 INSERT INTO `sys_org` (`org_id`, `org_code`, `org_name`, `parent_id`, `parent_code`, `parent_name`, `sort_code`, `remark`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('4037a607-de4a-11e7-b521-4437e6437701', '001', '算法小生', '-1', '-1', NULL, 1, '', '0', '2023-08-01 13:31:21', 'admin', NULL, NULL);
 COMMIT;
 
@@ -126,6 +131,12 @@ CREATE TABLE `sys_role_module` (
 -- Records of sys_role_module
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_role_module` (`role_id`, `module_id`) VALUES ('super-admin', '001');
+INSERT INTO `sys_role_module` (`role_id`, `module_id`) VALUES ('super-admin', '1797210739841884160');
+INSERT INTO `sys_role_module` (`role_id`, `module_id`) VALUES ('super-admin', '1797210846234599424');
+INSERT INTO `sys_role_module` (`role_id`, `module_id`) VALUES ('super-admin', '1797210920687689728');
+INSERT INTO `sys_role_module` (`role_id`, `module_id`) VALUES ('super-admin', '1797211013025292288');
+INSERT INTO `sys_role_module` (`role_id`, `module_id`) VALUES ('normal', '1797210846234599424');
 COMMIT;
 
 -- ----------------------------
@@ -157,7 +168,8 @@ CREATE TABLE `usr_user` (
 -- Records of usr_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `usr_user` (`user_id`, `username`, `account`, `password`, `org_code`, `role_id`, `department`, `title`, `employee_number`, `state`, `phone_number`, `gender`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('01bfd913206640808321af42ff0d316d', '超级管理员', 'admin', '', '001', 'super-admin', NULL, NULL, NULL, '0', '1234567990', '', '0', '2023-07-24 16:18:36', 'admin', '2023-08-04 10:38:28', 'admin');
+INSERT INTO `usr_user` (`user_id`, `username`, `account`, `password`, `org_code`, `role_id`, `department`, `title`, `employee_number`, `state`, `phone_number`, `gender`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('1', '超级管理员', 'admin', 'c4ca4238a0b923820dcc509a6f75849b', '001', 'super-admin', NULL, NULL, NULL, '0', '1234567990', '', '0', '2023-07-24 16:18:36', 'admin', '2024-06-02 18:02:49', 'admin');
+INSERT INTO `usr_user` (`user_id`, `username`, `account`, `password`, `org_code`, `role_id`, `department`, `title`, `employee_number`, `state`, `phone_number`, `gender`, `del_flag`, `create_time`, `create_user`, `update_time`, `update_user`) VALUES ('1797211702321405952', 'shen', 'shen', 'e10adc3949ba59abbe56e057f20f883e', '001.001', 'normal', NULL, NULL, NULL, '0', NULL, NULL, '0', '2024-06-02 18:20:35', 'admin', '2024-06-02 18:28:03', 'admin');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
