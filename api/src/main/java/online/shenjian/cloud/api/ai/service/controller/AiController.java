@@ -18,4 +18,9 @@ public class AiController implements AiClient {
     public ResponseVo<Object> chat(String content) {
          return ResponseVo.success(chatService.chat(content));
     }
+
+    @Override
+    public void sseChat(String content) {
+        chatService.sseChat(content);
+    }
 }

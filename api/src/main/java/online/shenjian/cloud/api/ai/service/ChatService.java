@@ -6,4 +6,6 @@ package online.shenjian.cloud.api.ai.service;
 public interface ChatService {
 
    Object chat(String content);
+
+   void sseChat(String content);
 }

@@ -47,7 +47,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // 放行接口
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/chat").permitAll()
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/verifyCode").permitAll()
                         .requestMatchers("/user/resetPassword").permitAll()
