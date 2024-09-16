@@ -88,3 +88,6 @@ aliyunOss:
     accessKeyId: LTAI8aSSSIJ
     accessKeySecret: 9O4RxCcSSSSSXYma4
     bucketName: sfxs
+ai:
+  zhipu:
+    apiKey: 618edb108b1ff13831d3.rAMMkwblZiOzF0dz

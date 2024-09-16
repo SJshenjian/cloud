@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * 阿里云OSS常量
+ * 系统常量
  *
  * @author: shenjian
  * @since: 2023/10/13
  */
 @Component
-public class AliyunOssConstants implements InitializingBean {
+public class SysConstants implements InitializingBean {
 
     @Value("${aliyunOss.file.endpoint}")
     private String endpoint;

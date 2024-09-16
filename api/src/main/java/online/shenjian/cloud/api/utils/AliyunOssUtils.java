@@ -24,11 +24,11 @@ import java.util.UUID;
 @Slf4j
 public class AliyunOssUtils {
 
-    private static final String ENDPOINT = AliyunOssConstants.SPRING_FILE_ENDPOINT;
-    private static final String ACCESS_KEY_ID = AliyunOssConstants.SPRING_FILE_ACCESS_KEY_ID;
-    private static final String ACCESS_KEY_SECRET = AliyunOssConstants.SPRING_FILE_ACCESS_KEY_SECRET;
-    private static final String BUCKET_NAME = AliyunOssConstants.SPRING_FILE_BUCKET_NAME;
-    private static final String SUB_DIR = AliyunOssConstants.SPRING_FILE_SUB_DIR;
+    private static final String ENDPOINT = SysConstants.SPRING_FILE_ENDPOINT;
+    private static final String ACCESS_KEY_ID = SysConstants.SPRING_FILE_ACCESS_KEY_ID;
+    private static final String ACCESS_KEY_SECRET = SysConstants.SPRING_FILE_ACCESS_KEY_SECRET;
+    private static final String BUCKET_NAME = SysConstants.SPRING_FILE_BUCKET_NAME;
+    private static final String SUB_DIR = SysConstants.SPRING_FILE_SUB_DIR;
 
     /**
      *  阿里云OSS上传文件方法
