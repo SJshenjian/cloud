@@ -7,6 +7,7 @@ import io.reactivex.Flowable;
 import online.shenjian.cloud.api.ai.service.ChatService;
 import online.shenjian.cloud.api.config.ai.SseServer;
 import online.shenjian.cloud.api.utils.TokenUtils;
+import online.shenjian.cloud.client.cloud.dto.ai.ChatDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Object chat(String content) {
+    public Object chat(ChatDto chatDto) {
+        String content = chatDto.getContent();
         List<ChatMessage> messages = new ArrayList<>();
         ChatMessage chatMessage = new ChatMessage(ChatMessageRole.USER.value(), content);
         messages.add(chatMessage);
@@ -39,7 +41,8 @@ public class ChatServiceImpl implements ChatService {
         return "";
     }
 
-    public void sseChat(String content) {
+    public void sseChat(ChatDto chatDto) {
+        String content = chatDto.getContent();
         String account = TokenUtils.getClaimsFromToken().getAccount();
         List<ChatMessage> messages = new ArrayList<>();
         ChatMessage chatMessage = new ChatMessage(ChatMessageRole.USER.value(), content);
