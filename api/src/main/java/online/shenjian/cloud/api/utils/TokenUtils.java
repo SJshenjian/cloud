@@ -96,6 +96,10 @@ public class TokenUtils {
 
     public static Claims getClaimsFromToken() {
         String token = RequestUtils.getRequest().getHeader("Authorization");
+        return getClaimsFromToken(token);
+    }
+
+    public static Claims getClaimsFromToken(String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }

@@ -6,7 +6,9 @@ import com.zhipu.oapi.service.v4.model.*;
 import io.reactivex.Flowable;
 import online.shenjian.cloud.api.ai.service.ChatService;
 import online.shenjian.cloud.api.config.ai.SseServer;
+import online.shenjian.cloud.api.utils.SysConstants;
 import online.shenjian.cloud.api.utils.TokenUtils;
+import online.shenjian.cloud.client.cloud.dto.ai.ChatDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +24,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Object chat(String content) {
+    public Object chat(ChatDto chatDto) {
+        String content = chatDto.getContent();
         List<ChatMessage> messages = new ArrayList<>();
         ChatMessage chatMessage = new ChatMessage(ChatMessageRole.USER.value(), content);
         messages.add(chatMessage);
@@ -39,7 +42,8 @@ public class ChatServiceImpl implements ChatService {
         return "";
     }
 
-    public void sseChat(String content) {
+    public void sseChat(ChatDto chatDto) {
+        String content = chatDto.getContent();
         String account = TokenUtils.getClaimsFromToken().getAccount();
         List<ChatMessage> messages = new ArrayList<>();
         ChatMessage chatMessage = new ChatMessage(ChatMessageRole.USER.value(), content);
@@ -59,6 +63,7 @@ public class ChatServiceImpl implements ChatService {
                         if (accumulator.getDelta() != null && accumulator.getDelta().getContent() != null) {
                             // Send each piece of content as it arrives
                             SseServer.sendMsg(account, accumulator.getDelta().getContent());
+                            System.out.println(accumulator.getDelta().getContent());
                         }
                     })
                     .lastElement()
@@ -67,6 +72,7 @@ public class ChatServiceImpl implements ChatService {
             // Here you might want to handle the completion or error cases more explicitly
             Choice choice = chatMessageAccumulator.getChoice();
             // Construct your model data as before, but perhaps you don't need to return it in this context
+            SseServer.sendMsg(account, SysConstants.SSE_END);
         }
     }
 

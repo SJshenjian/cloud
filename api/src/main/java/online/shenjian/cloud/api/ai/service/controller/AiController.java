@@ -2,6 +2,7 @@ package online.shenjian.cloud.api.ai.service.controller;
 
 import online.shenjian.cloud.api.ai.service.ChatService;
 import online.shenjian.cloud.client.cloud.AiClient;
+import online.shenjian.cloud.client.cloud.dto.ai.ChatDto;
 import online.shenjian.cloud.client.common.ResponseVo;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,12 +16,12 @@ public class AiController implements AiClient {
     }
 
     @Override
-    public ResponseVo<Object> chat(String content) {
-         return ResponseVo.success(chatService.chat(content));
+    public ResponseVo<Object> chat(ChatDto chatDto) {
+         return ResponseVo.success(chatService.chat(chatDto));
     }
 
     @Override
-    public void sseChat(String content) {
-        chatService.sseChat(content);
+    public void sseChat(ChatDto chatDto) {
+        chatService.sseChat(chatDto);
     }
 }

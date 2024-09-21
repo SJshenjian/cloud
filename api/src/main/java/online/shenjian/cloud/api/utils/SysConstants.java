@@ -28,6 +28,9 @@ public class SysConstants implements InitializingBean {
     @Value("${aliyunOss.file.subDir}")
     private String subDir;
 
+    public static final String SSE_START = "<SSE_START>";
+    public static final String SSE_END = "<SSE_END>";
+
     public static String SPRING_FILE_ENDPOINT;
     public static String SPRING_FILE_ACCESS_KEY_ID;
     public static String SPRING_FILE_ACCESS_KEY_SECRET;

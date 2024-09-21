@@ -1,5 +1,6 @@
 package online.shenjian.cloud.api.config.ai;
 
+import online.shenjian.cloud.api.utils.SysConstants;
 import online.shenjian.cloud.api.utils.TokenUtils;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -11,8 +12,8 @@ public class SseServer {
 
     private static final Map<String, SseEmitter> EMITTERS = new ConcurrentHashMap<>();
 
-    public static SseEmitter subscribe() {
-        String account = TokenUtils.getClaimsFromToken().getAccount();
+    public static SseEmitter subscribe(String token) {
+        String account = TokenUtils.getClaimsFromToken(token).getAccount();
         SseEmitter emitter = new SseEmitter(0L);
         EMITTERS.put(account, emitter);
 
@@ -21,12 +22,18 @@ public class SseServer {
             EMITTERS.remove(account);
         });
 
+        try {
+            emitter.send(SysConstants.SSE_START);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         emitter.onTimeout(() -> {
             System.out.println("SSE connection timed out for client: " + account);
             emitter.complete();
             EMITTERS.remove(account);
         });
-
         return emitter;
     }
 
@@ -34,7 +41,7 @@ public class SseServer {
         SseEmitter emitter = EMITTERS.get(account);
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().data(message));
+                emitter.send(message);
             } catch (IOException e) {
                 EMITTERS.remove(account);
                 emitter.completeWithError(e);
