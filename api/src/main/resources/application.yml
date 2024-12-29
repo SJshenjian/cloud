@@ -90,4 +90,6 @@ aliyunOss:
     bucketName: sfxs
 ai:
   zhipu:
-    apiKey: 618edb108b1ff13831d3.rAMMkwblZiOzF0dz
+    apiKey: eeeeeeeee
+  doubao:
+    apiKey: eeeeeeeee
