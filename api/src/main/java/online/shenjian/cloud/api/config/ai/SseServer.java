@@ -37,7 +37,7 @@ public class SseServer {
         return emitter;
     }
 
-    public static void sendMsg(String account, String message) {
+    public static void sendMsg(String account, Object message) {
         SseEmitter emitter = EMITTERS.get(account);
         if (emitter != null) {
             try {

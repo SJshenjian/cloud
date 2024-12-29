@@ -20,5 +20,9 @@ public interface AiClient {
     @PostMapping(value = "/sseChat")
     @Operation(summary = "AI聊天(SSE)", tags = "AI大模型")
     void sseChat(@RequestBody ChatDto chatDto);
+
+    @PostMapping(value = "/sseChatDoubao")
+    @Operation(summary = "豆包AI聊天(SSE)", tags = "AI大模型")
+    void sseChatDoubao(@RequestBody ChatDto chatDto);
 }
 

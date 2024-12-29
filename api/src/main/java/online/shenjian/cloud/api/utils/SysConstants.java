@@ -37,6 +37,9 @@ public class SysConstants implements InitializingBean {
     public static String SPRING_FILE_BUCKET_NAME;
     public static String SPRING_FILE_SUB_DIR;
 
+    // https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D
+    public static final String DOUBAO_PRO_128k = "ep-20241229100326-8w9bk";
+
     @Override
     public void afterPropertiesSet() {
         SPRING_FILE_ENDPOINT = endpoint;

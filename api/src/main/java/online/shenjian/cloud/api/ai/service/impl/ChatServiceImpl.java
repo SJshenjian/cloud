@@ -9,12 +9,15 @@ import online.shenjian.cloud.api.config.ai.SseServer;
 import online.shenjian.cloud.api.utils.SysConstants;
 import online.shenjian.cloud.api.utils.TokenUtils;
 import online.shenjian.cloud.client.cloud.dto.ai.ChatDto;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Primary
 public class ChatServiceImpl implements ChatService {
 
     private ClientV4 clientV4;

@@ -43,5 +43,8 @@ dependencies {
     // 阿里云OSS存储
     implementation 'com.aliyun.oss:aliyun-sdk-oss:3.10.2'
     implementation 'cn.bigmodel.openapi:oapi-java-sdk:release-V4-2.0.2'
+
+    // 豆包
+    implementation 'com.volcengine:volcengine-java-sdk-ark-runtime:0.1.145'
     
 }
