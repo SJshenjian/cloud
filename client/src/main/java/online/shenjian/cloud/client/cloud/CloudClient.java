@@ -2,8 +2,9 @@ package online.shenjian.cloud.client.cloud;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import online.shenjian.cloud.client.cloud.dto.UserDto;
+import online.shenjian.cloud.client.cloud.dto.doge.DogeDto;
+import online.shenjian.cloud.client.cloud.dto.doge.DogeQueryDto;
 import online.shenjian.cloud.client.cloud.dto.user.PasswordDto;
 import online.shenjian.cloud.client.cloud.dto.user.UserQueryDto;
 import online.shenjian.cloud.client.common.ResponseVo;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @FeignClient(value = "cloud", contextId = "cloud")
 @Component
@@ -47,5 +50,8 @@ public interface CloudClient {
     @Operation(summary = "重置密码", tags = "用户管理")
     ResponseVo resetPassword(@RequestParam(value = "userId") String userId);
 
+    @PostMapping(value = "/doge/getTop100DogeBalanceHistory", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "余额监控", tags = "DOGE")
+    List<DogeDto> getTop100DogeBalanceHistory(@RequestBody DogeQueryDto dogeQueryDto);
 }
 

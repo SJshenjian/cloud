@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                         // 放行Swagger页面
                         .requestMatchers("/springdoc/**").permitAll()
                         // 所有请求全部需要鉴权认证
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 // 异常处理(权限拒绝、登录失效等)
                 .headers((headers) -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()))

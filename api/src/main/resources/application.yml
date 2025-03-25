@@ -1,4 +1,10 @@
 spring:
+  elasticsearch:
+    uris: http://localhost:9200
+    username: elastic
+    password: elasticsearch
+#    ssl:
+#      certificate-authorities: /path/to/http_ca.crt
   jackson:
     # JSON 序列化不返回值为NULL的字段
     default-property-inclusion: NON_EMPTY

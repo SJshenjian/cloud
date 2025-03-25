@@ -46,5 +46,8 @@ dependencies {
 
     // 豆包
     implementation 'com.volcengine:volcengine-java-sdk-ark-runtime:0.1.145'
-    
+
+    // ElasticSearch
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation 'co.elastic.clients:elasticsearch-java:8.15.0'
 }

@@ -1,13 +1,18 @@
 package online.shenjian.cloud.api.base.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import online.shenjian.cloud.api.base.service.DogeService;
 import online.shenjian.cloud.api.base.service.UserService;
 import online.shenjian.cloud.client.cloud.CloudClient;
 import online.shenjian.cloud.client.cloud.dto.UserDto;
+import online.shenjian.cloud.client.cloud.dto.doge.DogeDto;
+import online.shenjian.cloud.client.cloud.dto.doge.DogeQueryDto;
 import online.shenjian.cloud.client.cloud.dto.user.PasswordDto;
 import online.shenjian.cloud.client.cloud.dto.user.UserQueryDto;
 import online.shenjian.cloud.client.common.ResponseVo;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author shenjian
@@ -17,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CloudController implements CloudClient {
 
     private UserService userService;
-    public CloudController(UserService userService) {
+    private DogeService dogeService;
+    public CloudController(UserService userService, DogeService dogeService) {
         this.userService = userService;
+        this.dogeService = dogeService;
     }
 
     @Override
@@ -54,5 +61,10 @@ public class CloudController implements CloudClient {
     @Override
     public ResponseVo resetPassword(String userId) {
         return userService.resetPassword(userId);
+    }
+
+    @Override
+    public List<DogeDto> getTop100DogeBalanceHistory(DogeQueryDto dogeQueryDto) {
+        return dogeService.getTop100DogeBalanceHistory(dogeQueryDto);
     }
 }
