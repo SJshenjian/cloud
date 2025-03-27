@@ -67,4 +67,8 @@ public class CloudController implements CloudClient {
     public List<DogeDto> getTop100DogeBalanceHistory(DogeQueryDto dogeQueryDto) {
         return dogeService.getTop100DogeBalanceHistory(dogeQueryDto);
     }
+    @Override
+    public void checkDogeBalance() {
+        dogeService.checkDogeBalance();
+    }
 }

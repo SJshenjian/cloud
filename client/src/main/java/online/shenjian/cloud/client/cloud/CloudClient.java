@@ -51,7 +51,11 @@ public interface CloudClient {
     ResponseVo resetPassword(@RequestParam(value = "userId") String userId);
 
     @PostMapping(value = "/doge/getTop100DogeBalanceHistory", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "余额监控", tags = "DOGE")
+    @Operation(summary = "余额历史监控", tags = "DOGE")
     List<DogeDto> getTop100DogeBalanceHistory(@RequestBody DogeQueryDto dogeQueryDto);
+
+    @PostMapping(value = "/doge/checkDogeBalance", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "余额变化监控", tags = "DOGE")
+    void checkDogeBalance();
 }
 

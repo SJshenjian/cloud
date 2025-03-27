@@ -6,11 +6,14 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import online.shenjian.cloud.api.base.model.es.Doge;
 import online.shenjian.cloud.api.base.service.DogeService;
 import online.shenjian.cloud.client.cloud.dto.doge.DogeDto;
 import online.shenjian.cloud.client.cloud.dto.doge.DogeQueryDto;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,7 +22,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DogeServiceImpl implements DogeService {
+    // 存储每个地址的最近余额
+    private static final Map<String, Long> balanceHistory = new HashMap<>();
+    private static final long THRESHOLD = 1_000_000; // 变化阈值：1000万 Doge
+
     private final ElasticsearchClient elasticsearchClient;
 
     private static final int TOP_ADDRESS_LIMIT = 100;
@@ -38,17 +46,84 @@ public class DogeServiceImpl implements DogeService {
         }
     }
 
+    @Override
+    @Scheduled(cron = "0 15 19 * * ?")
+    public void checkDogeBalance() {
+        List<DogeDto> doges = getTop100DogeBalanceHistory(new DogeQueryDto());
+        if (doges == null || doges.isEmpty()) {
+            System.out.println("未获取到 Dogecoin 数据");
+            return;
+        }
+
+        for (DogeDto dto : doges) {
+            String address = dto.getAddress();
+            long currentBalance = dto.getHistory().get(0).getBalance();
+            String wallet = dto.getWallet();
+
+            // 初始化或获取上一次余额
+            Long previousBalance = balanceHistory.getOrDefault(address, null);
+
+            // 检查余额变化
+            if (previousBalance == null) {
+//                log.info("[" + java.time.LocalDate.now() + "] 初次记录地址 " + address +
+//                        " 的余额: " + currentBalance);
+            } else {
+                long difference = currentBalance - previousBalance;
+                if (Math.abs(difference) >= THRESHOLD) {
+                    String action = difference > 0 ? "增加" : "减少";
+                    String message = "[" + java.time.LocalDate.now() + "] 警告: 地址 " + address +
+                            " 的余额" + action + "了 " + Math.abs(difference) +
+                            " Dogecoin (之前: " + previousBalance + ", 现在: " + currentBalance + ")";
+                    if (StringUtils.isNotBlank(wallet)) {
+                        message += " [重点监控钱包: " + wallet + "]";
+                    }
+                    log.info(message);
+                } else {
+//                    log.info("[" + java.time.LocalDate.now() + "] 地址 " + address +
+//                            " 的余额变化: " + difference + " (未达提醒阈值)");
+                }
+            }
+
+            // 更新历史余额
+            balanceHistory.put(address, currentBalance);
+
+            // 对于有 wallet 标记的地址，检查历史记录中的变化
+            if (StringUtils.isNotBlank(wallet)) {
+                List<DogeDto.History> histories = dto.getHistory();
+                if (histories != null && !histories.isEmpty()) {
+                    long lastHistoryBalance = histories.get(0).getBalance(); // 假设第一个是最近的历史记录
+                    for (int i = 1; i < histories.size(); i++) {
+                        long olderBalance = histories.get(i).getBalance();
+                        long historyDifference = lastHistoryBalance - olderBalance;
+                        if (Math.abs(historyDifference) >= THRESHOLD) {
+                            String action = historyDifference > 0 ? "减少" : "增加";
+                            log.info("[" + histories.get(i).getDate() + "] 历史警告: 地址 " + address +
+                                    " 的余额" + action + "了 " + Math.abs(historyDifference) +
+                                    " Dogecoin [重点监控钱包: " + wallet + "]");
+                        }
+                        lastHistoryBalance = olderBalance;
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * 获取当前排名前100的地址(按rank升序)
      */
-    private List<Doge> getCurrentTop100Addresses() throws IOException {
-        SearchResponse<Doge> response = elasticsearchClient.search(s -> s
-                        .index("doge")
-                        .size(TOP_ADDRESS_LIMIT)
-                        .sort(so -> so.field(f -> f.field("rank").order(SortOrder.Asc)))
-                        .collapse(c -> c.field("address")) // 按地址去重
-                        .source(sc -> sc.filter(f -> f.includes("address", "wallet", "rank"))) // 只获取必要字段
-                , Doge.class);
+    private List<Doge> getCurrentTop100Addresses() {
+        SearchResponse<Doge> response = null;
+        try {
+            response = elasticsearchClient.search(s -> s
+                            .index("doge")
+                            .size(TOP_ADDRESS_LIMIT)
+                            .sort(so -> so.field(f -> f.field("rank").order(SortOrder.Asc)))
+                            .collapse(c -> c.field("address")) // 按地址去重
+                            .source(sc -> sc.filter(f -> f.includes("address", "wallet", "rank"))) // 只获取必要字段
+                    , Doge.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return response.hits().hits().stream()
                 .map(Hit::source)
