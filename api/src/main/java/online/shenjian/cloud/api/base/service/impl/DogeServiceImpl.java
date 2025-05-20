@@ -17,6 +17,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -141,7 +143,7 @@ public class DogeServiceImpl implements DogeService {
                 .map(Doge::getAddress)
                 .collect(Collectors.toList());
 
-        // 构建基础查询
+        // 构建基础查询，添加c_date范围过滤
         Query baseQuery = Query.of(q -> q
                 .bool(b -> b
                         .must(m -> m.terms(t -> t
@@ -150,6 +152,8 @@ public class DogeServiceImpl implements DogeService {
                                         .map(FieldValue::of)
                                         .collect(Collectors.toList())))
                         ))
+                        .filter(f -> f.range(r -> r
+                                .date(d -> d.field("c_date").gte(LocalDateTime.now().minusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))))
                 )
         );
 

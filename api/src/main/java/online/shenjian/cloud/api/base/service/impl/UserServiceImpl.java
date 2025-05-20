@@ -19,7 +19,7 @@ import online.shenjian.cloud.client.cloud.dto.user.UserQueryDto;
 import online.shenjian.cloud.client.common.ResponseVo;
 import online.shenjian.cloud.common.enums.Constant;
 import online.shenjian.cloud.common.utils.CommonDtoUtils;
-import online.shenjian.cloud.common.utils.MD5Encryption;
+import online.shenjian.cloud.common.utils.Md5Utils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -121,11 +121,11 @@ public class UserServiceImpl implements UserService {
             return ResponseVo.error("用户信息不存在!");
         }
 
-        if (!user.getPassword().equals(MD5Encryption.MD5(originPassword))) {
+        if (!user.getPassword().equals(Md5Utils.MD5(originPassword))) {
             return ResponseVo.error("原密码输入错误!");
         }
 
-        user.setPassword(MD5Encryption.MD5(newPassword));
+        user.setPassword(Md5Utils.MD5(newPassword));
         user.setUpdateTime(new Date());
         user.setUpdateUser(claims.getAccount());
         userMapper.updateById(user);
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
         User user = CommonDtoUtils.transform(userDto, User.class);
         user.setUserId(IdUtil.getSnowflakeNextIdStr());
-        user.setPassword(MD5Encryption.MD5(Constant.INIT_PASSWORD));
+        user.setPassword(Md5Utils.MD5(Constant.INIT_PASSWORD));
         user.setDelFlag(Constant.YesOrNo.NO.val());
         user.setCreateTime(new Date());
         Claims claims = TokenUtils.getClaimsFromToken();
@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService {
             return ResponseVo.error("用户ID不能为空");
         }
         User user = new User();
-        user.setPassword(MD5Encryption.MD5(Constant.INIT_PASSWORD));
+        user.setPassword(Md5Utils.MD5(Constant.INIT_PASSWORD));
         user.setUserId(userId);
         userMapper.updateById(user);
         user.setUpdateUser(TokenUtils.getClaimsFromToken().getAccount());

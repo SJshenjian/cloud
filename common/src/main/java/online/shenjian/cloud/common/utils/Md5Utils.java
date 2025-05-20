@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * MD5码操作，针对传入字符串进行加密
  */
-public class MD5Encryption {
+public class Md5Utils {
 
     /**
      * MD5 32位加密
@@ -37,6 +37,22 @@ public class MD5Encryption {
             e.printStackTrace();
         }
         return re_md5;
+    }
+
+    /**
+     * 计算MD5摘要
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    public static String calculateMD5(byte[] data) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] digest = md.digest(data);
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
 }
