@@ -4,6 +4,8 @@ public class Constant {
 
 
     public static final String INIT_PASSWORD = "123456";
+    public static final Integer BUFFER_SIZE = 8 * 1024 * 1024; // 8MB;
+    public static final String FILE_PREFIX = "/home/shenjian/files/";
 
     public enum YesOrNo {
 

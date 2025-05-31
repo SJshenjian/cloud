@@ -2,6 +2,7 @@ package online.shenjian.cloud.client.cloud;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,4 +20,8 @@ public interface DownloadClient {
     @GetMapping("/download")
     @Operation(summary = "大文件下载", tags = "通用服务", security = {@SecurityRequirement(name = "token")})
     ResponseEntity<Object> downloadFile(@RequestHeader HttpHeaders headers, @RequestParam String fileId);
+
+    @GetMapping("/stream")
+    @Operation(summary = "流式下载", tags = "通用服务", security = {@SecurityRequirement(name = "token")})
+    void downloadStream(HttpServletResponse response, @RequestParam String fileId);
 }
