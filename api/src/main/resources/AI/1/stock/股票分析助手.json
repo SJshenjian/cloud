@@ -1,0 +1,579 @@
+{
+  "name": "股票分析助手",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -720,
+        -80
+      ],
+      "id": "4944a582-a6c5-4406-841c-b3e92f93f6cb",
+      "name": "接收消息",
+      "webhookId": "4ea88418-6f96-44df-b44d-ecf39372dfb8"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -100,
+        -80
+      ],
+      "id": "eb336e6c-4c12-47f6-9b02-f23e0dd55594",
+      "name": "查询股票信息",
+      "credentials": {
+        "mySql": {
+          "id": "5ndiAF8ptPF79qCw",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=根据以下股票stocks数据表结构，请生成合适的SQL查询语句来回答用户的问题。只需返回SQL语句，不需要额外解释。\n\n表结构说明：\n- code (varchar(255)): 股票代码\n- name (varchar(255)): 股票简称\n- full_name (varchar(255)): 公司全称\n- open_date (date): 上市日期\n- block (varchar(255)): 所属板块\n- total_share (double): A股总股本(万股)\n- circulation_share (double): A股流通股本(万股)\n- industry (varchar(255)): 所属行业\n- source (varchar(255)): 交易所来源(上交所/深交所)\n\n用户问题：{{ $json.chatInput }}\n\n请直接输出对应的SQL查询语句： "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        -80
+      ],
+      "id": "faa59529-f084-467f-85eb-0ce675c0115a",
+      "name": "股票查询SQL生成"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        160
+      ],
+      "id": "02b8ca6b-47b5-47ab-b143-c7ca9dfeda73",
+      "name": "股票SQL生成模型",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "Lmhno3oFXBa1Ge4t",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data.toJsonString() }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=你是一个金融数据分析助手，根据相关新闻分析舆论影响。请按以下步骤执行：\n1. 输出结构化结果：\n{\n  \"sentiment_analysis\": {\n    \"positive\": \"正面新闻占比\",\n    \"neutral\": \"中性新闻占比\",\n    \"negative\": \"负面新闻占比\"\n  },\n  \"summary\": \"综合舆论影响评估\",\n  \"stock\": \"股票名称\"\n}\n如果查询无结果，返回：{\"error\": \"No news found for this stock code.\"} ",
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        920,
+        -80
+      ],
+      "id": "5b1bdae1-7c38-4bb4-8c4e-1511cddead68",
+      "name": "舆情分析"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-reasoner",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        800,
+        160
+      ],
+      "id": "838b54e9-d4d8-449a-ab3a-2e7fdb4f061b",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "Lmhno3oFXBa1Ge4t",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  if item.json.source == '上交所':\n    item.json.xueqiu_code = 'SH' + item.json.code\n  elif item.json.source == '深交所':\n    item.json.xueqiu_code = 'SZ' + item.json.code\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        -80
+      ],
+      "id": "981c3b45-2b9e-4840-9edf-0091d0290f8f",
+      "name": "映射为股票代码"
+    },
+    {
+      "parameters": {
+        "collection": "news",
+        "options": {
+          "limit": 2,
+          "sort": "{\"p_date\": -1}"
+        },
+        "query": "={\"code\": \"{{ $json.xueqiu_code }}\"}"
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        360,
+        -80
+      ],
+      "id": "bea03002-f861-470f-be85-1fc736de93b4",
+      "name": "查询最新新闻",
+      "credentials": {
+        "mongoDb": {
+          "id": "oe33uiuluc0NijKx",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -80
+      ],
+      "id": "0a15142f-5e99-40ad-bd5a-661567207128",
+      "name": "多条记录合并为一条"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = JSON.parse($input.first().json.output); // 解析字符串化的 JSON\nconst sentiment = output.sentiment_analysis;\nconst chartData = [parseFloat(sentiment.positive), parseFloat(sentiment.neutral), parseFloat(sentiment.negative)];\nreturn [{ json: { chartData, summary: output.summary, name: output.stock } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -80
+      ],
+      "id": "6627ac9c-a2ab-4418-901d-546498d7a402",
+      "name": "转为QuickChart所需格式"
+    },
+    {
+      "parameters": {
+        "url": "https://quickchart.io/chart",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "c",
+              "value": "={type:'bar',data:{labels:['正向','中性','负向'],datasets:[{label:' {{ $json.name }}(%)',data: [{{ $json.chartData }}],backgroundColor:['rgba(75,192,192,0.6)','rgba(255,206,86,0.6)','rgba(255,99,132,0.6)']}]}}"
+            },
+            {
+              "name": "format",
+              "value": "png"
+            },
+            {
+              "name": "width",
+              "value": "400"
+            },
+            {
+              "name": "height",
+              "value": "400"
+            },
+            {
+              "name": "backgroundColor",
+              "value": "white"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        -340
+      ],
+      "id": "aa364799-4505-4bd6-8706-9c72c03634d1",
+      "name": "柱状图生成"
+    },
+    {
+      "parameters": {
+        "chatId": "-4847463524",
+        "text": "={{ $json.summary }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1980,
+        -80
+      ],
+      "id": "9f83a409-49fe-4925-a401-f8ac0f89be8c",
+      "name": "舆情总结发送",
+      "webhookId": "d19456d5-791a-4c7a-b202-7eed904e74a3",
+      "credentials": {
+        "telegramApi": {
+          "id": "wEE0R8E7gzeMUWIC",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-4847463524",
+        "binaryData": true,
+        "additionalFields": {
+          "fileName": "情绪分析.png"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1960,
+        -340
+      ],
+      "id": "150c8651-51c5-4ce6-be01-7da123ba6c1d",
+      "name": "舆情柱状图发送",
+      "webhookId": "b13400b4-805d-42c5-93de-9b6a8e4250ef",
+      "credentials": {
+        "telegramApi": {
+          "id": "wEE0R8E7gzeMUWIC",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "接收消息": [
+      {
+        "json": {
+          "sessionId": "55cd872a22ea459c9e3c611ee21ff350",
+          "action": "sendMessage",
+          "chatInput": "中联重科"
+        }
+      }
+    ],
+    "股票查询SQL生成": [
+      {
+        "json": {
+          "output": "SELECT * FROM stocks WHERE name LIKE '%中联重科%' OR full_name LIKE '%中联重科%';"
+        }
+      }
+    ],
+    "查询股票信息": [
+      {
+        "json": {
+          "code": "000157",
+          "name": "中联重科",
+          "full_name": null,
+          "open_date": "2000-10-12",
+          "block": "主板",
+          "total_share": 7096027688,
+          "circulation_share": 7070417363,
+          "industry": "C 制造业",
+          "source": "深交所"
+        }
+      }
+    ],
+    "舆情分析": [
+      {
+        "json": {
+          "output": "{\n  \"sentiment_analysis\": {\n    \"positive\": \"80%\",\n    \"neutral\": \"20%\",\n    \"negative\": \"0%\"\n  },\n  \"summary\": \"综合舆论影响评估：整体舆论以正面为主，显示投资者信心强劲（融资买入活跃且余额高位）、公司积极回馈股东（如派现红利和回购股份）、行业前景乐观（券商研报看好增长和复苏）。中性新闻提供风险分散信息，无显著负面影响。\",\n  \"stock\": \"中联重科\"\n}"
+        }
+      }
+    ],
+    "映射为股票代码": [
+      {
+        "json": {
+          "code": "000157",
+          "name": "中联重科",
+          "full_name": null,
+          "open_date": "2000-10-12",
+          "block": "主板",
+          "total_share": 7096027688,
+          "circulation_share": 7070417363,
+          "industry": "C 制造业",
+          "source": "深交所",
+          "xueqiu_code": "SZ000157"
+        }
+      }
+    ],
+    "查询最新新闻": [
+      {
+        "json": {
+          "_id": "431dd852b3d513bfc92df6f39e2695c0",
+          "code": "SZ000157",
+          "content": "同花顺（300033）数据中心显示，中联重科（000157）6月11日获融资买入1555.00万元，占当日买入金额的5.51%，当前融资余额18.33亿元，占流通市值的3.62%，超过历史90%分位水平。 交易日期融资买入额融资偿还额融资余额2025-06-1115550007.004... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250612/c668842205.shtml",
+          "p_date": "2025-06-12T09:57:00.000Z",
+          "title": "中联重科：6月11日获融资买入1555.00万元，占当日流入资金比例为5.51%"
+        }
+      },
+      {
+        "json": {
+          "_id": "f92571fd3fcc4d8d09c9e7172fc9d26b",
+          "code": "SZ000157",
+          "content": "同花顺（300033）数据中心显示，中联重科（000157）6月6日获融资买入1349.78万元，占当日买入金额的8.27%，当前融资余额18.56亿元，占流通市值的3.72%，超过历史90%分位水平。 交易日期融资买入额融资偿还额融资余额2025-06-0613497776.0019... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250609/c668743853.shtml",
+          "p_date": "2025-06-09T09:57:00.000Z",
+          "title": "中联重科：6月6日获融资买入1349.78万元，占当日流入资金比例为8.27%"
+        }
+      },
+      {
+        "json": {
+          "_id": "e3e8a300a2104e1503cb05a2f455cc06",
+          "code": "SZ000157",
+          "content": "同花顺（300033）数据中心显示，中联重科（000157）6月4日获融资买入1414.41万元，占当日买入金额的17.01%，当前融资余额18.50亿元，占流通市值的3.71%，超过历史90%分位水平。 交易日期融资买入额融资偿还额融资余额2025-06-0414144080.001... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250605/c668669396.shtml",
+          "p_date": "2025-06-05T09:57:00.000Z",
+          "title": "中联重科：6月4日获融资买入1414.41万元，占当日流入资金比例为17.01%"
+        }
+      },
+      {
+        "json": {
+          "_id": "93db8a95e37c4c14bb7cd5b312ab61d4",
+          "code": "SZ000157",
+          "content": "同花顺（300033）数据中心显示，中联重科（000157）6月3日获融资买入2982.87万元，占当日买入金额的23.85%，当前融资余额18.48亿元，占流通市值的3.71%，超过历史90%分位水平。 交易日期融资买入额融资偿还额融资余额2025-06-0329828651.001... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250604/c668637496.shtml",
+          "p_date": "2025-06-04T09:57:00.000Z",
+          "title": "中联重科：6月3日获融资买入2982.87万元"
+        }
+      },
+      {
+        "json": {
+          "_id": "7fdb3a75c276b437d640e9b7e5ee010b",
+          "code": "SZ000157",
+          "content": "光大证券发布研报称，近期工程机械行业销量维持增长趋势，行业短期具备良好催化剂;两会政策对工程机械行业支持力度较大，行业中期需求持续复苏有保障;同时随着工程机械行业国际化、电动化进程不断推进，工程机械龙头企业有望量利齐升。该行... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250522/c668355314.shtml",
+          "p_date": "2025-05-22T16:10:00.000Z",
+          "title": "光大证券：工程机械上市公司业绩稳健增长 行业维持复苏趋势"
+        }
+      },
+      {
+        "json": {
+          "_id": "8bbe80cad92e951c92ba258d15280191",
+          "code": "SZ000157",
+          "content": "投资者提问： 公司一季度净利润可观，但当天表现差强人意，公司市值也远不及真实价值，公司去年港股回购也差强人意，请问公司有没有计划采取积极措施，如继续回购港股，并注销已回购股份，或进行中期派... 网页链接",
+          "link": "https://finance.sina.com.cn/stock/relnews/dongmiqa/2025-05-09/doc-inevynpq7382917.shtml",
+          "p_date": "2025-05-09T21:01:00.000Z",
+          "title": "中联重科:一季度净利可观，公司拟派现红利并继续回购港股，注销已回购股份，积极回馈股东"
+        }
+      },
+      {
+        "json": {
+          "_id": "eede6c40fdf793e09580a939fb02fd33",
+          "code": "SZ000157",
+          "content": "同花顺（300033）金融研究中心05月09日讯，有投资者向中联重科（000157）提问， 董事会秘书您好，请问中联重科从美国进口（不是出口）的产品原料占比是多少？ 公司回答表示，您好，感谢您对公司的关注，公司从美国直接进口零部件的金... 网页链接",
+          "link": "http://yuanchuang.10jqka.com.cn/20250509/c668040799.shtml",
+          "p_date": "2025-05-09T09:10:00.000Z",
+          "title": "中联重科：公司从美国直接进口零部件的金额极低，2024年约为1600万人民币，占公司该年营业成本比例低于..."
+        }
+      },
+      {
+        "json": {
+          "_id": "d39142fb757c4858736c26f0c3f4a297",
+          "code": "SZ000157",
+          "content": "同花顺（300033）金融研究中心05月07日讯，有投资者向中联重科（000157）提问， 董事会秘书您好，请问中联重科出口美国的产品占比是多少？ 公司回答表示，尊敬的投资者您好，感谢您对公司的关注。美国市场在公司总营收中占比极低：202... 网页链接",
+          "link": "http://yuanchuang.10jqka.com.cn/20250507/c667985806.shtml",
+          "p_date": "2025-05-07T16:01:00.000Z",
+          "title": "中联重科：公司的业务已覆盖全球170多个国家/地区，收入来源分散、渠道多元，成功构建起 “西方不亮东..."
+        }
+      },
+      {
+        "json": {
+          "_id": "811197a8d52fbfa13e859d61fb29360c",
+          "code": "SZ000157",
+          "content": "同花顺（300033）数据中心显示，中联重科（000157）4月30日获融资买入2641.51万元，占当日买入金额的11.14%，当前融资余额17.68亿元，占流通市值的3.41%，超过历史80%分位水平。 交易日期融资买入额融资偿还额融资余额2025-04-3026415138.00... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250506/c667942669.shtml",
+          "p_date": "2025-05-06T09:55:00.000Z",
+          "title": "中联重科：4月30日获融资买入2641.51万元，占当日流入资金比例为11.14%"
+        }
+      },
+      {
+        "json": {
+          "_id": "4504eb10f0f915acdcb5d6302b5c5d10",
+          "code": "SZ000157",
+          "content": "同花顺（300033）数据中心显示，中联重科（000157）4月29日获融资买入688.44万元，占当日买入金额的12.38%，当前融资余额17.69亿元，占流通市值的3.44%，超过历史80%分位水平。 交易日期融资买入额融资偿还额融资余额2025-04-296884398.0071... 网页链接",
+          "link": "http://stock.10jqka.com.cn/20250430/c667887233.shtml",
+          "p_date": "2025-04-30T09:55:00.000Z",
+          "title": "中联重科：4月29日获融资买入688.44万元"
+        }
+      }
+    ],
+    "转为QuickChart所需格式": [
+      {
+        "json": {
+          "chartData": [
+            80,
+            20,
+            0
+          ],
+          "summary": "综合舆论影响评估：整体舆论以正面为主，显示投资者信心强劲（融资买入活跃且余额高位）、公司积极回馈股东（如派现红利和回购股份）、行业前景乐观（券商研报看好增长和复苏）。中性新闻提供风险分散信息，无显著负面影响。",
+          "name": "中联重科"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "接收消息": {
+      "main": [
+        [
+          {
+            "node": "股票查询SQL生成",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "查询股票信息": {
+      "main": [
+        [
+          {
+            "node": "映射为股票代码",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "股票查询SQL生成": {
+      "main": [
+        [
+          {
+            "node": "查询股票信息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "股票SQL生成模型": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "股票查询SQL生成",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "舆情分析",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "舆情分析": {
+      "main": [
+        [
+          {
+            "node": "转为QuickChart所需格式",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "映射为股票代码": {
+      "main": [
+        [
+          {
+            "node": "查询最新新闻",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "查询最新新闻": {
+      "main": [
+        [
+          {
+            "node": "多条记录合并为一条",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "多条记录合并为一条": {
+      "main": [
+        [
+          {
+            "node": "舆情分析",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "转为QuickChart所需格式": {
+      "main": [
+        [
+          {
+            "node": "柱状图生成",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "舆情总结发送",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "柱状图生成": {
+      "main": [
+        [
+          {
+            "node": "舆情柱状图发送",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "舆情柱状图发送": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "15af6b62-b8c4-47d6-ab19-9d5f4c2dc142",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df3165e89bcadfe8714cbd7bc53e662f12f328cc32760f7ec97b3ca5c1de88f0"
+  },
+  "id": "hx7IhGUck0plQAV0",
+  "tags": []
+}
