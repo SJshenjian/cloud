@@ -36,6 +36,8 @@ subprojects {
     // 指定仓库地址
     repositories {
         mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
         mavenCentral()
     }
 
